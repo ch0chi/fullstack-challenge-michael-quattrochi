@@ -21,5 +21,5 @@ Route::get('/', function () {
 });
 
 Route::controller(WeatherUserController::class)->group(function() {
-    Route::get('/weather/users/summary', 'getAllUsersWeatherSummary');
+    Route::get('/weather/users/summary', 'getAllUsersWeather');
 });

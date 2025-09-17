@@ -7,44 +7,33 @@ use Illuminate\Http\Request;
 use App\Services\WeatherService;
 class WeatherUserController extends Controller
 {
-    public function getAllUsersWeatherSummary(Request $request)
-    {
+    /**
+     * todo If I had more time, I would implement pagination for large user sets
+     *      It's not ideal to ever fetch an entire table at once. It's a massive scalability issue.
+     *      I'm also not doing any validation on the coordinates, assuming they are valid if present.
+     *
+     * Get weather summary for all users with coordinates.
+     *
+     * @param Request $request
+     * @return \Illuminate\Http\JsonResponse
+     */
+    public function getAllUsersWeather(Request $request,WeatherService $weatherService): \Illuminate\Http\JsonResponse {
         try {
             $users = User::all()->select(['id','name','latitude','longitude'])->toArray();
-            $weatherService = app(WeatherService::class);
 
             $weatherData = [];
             foreach ($users as $user) {
-                if (isset($user['latitude']) && isset($user['longitude'])) {
-                    $weather = $weatherService->getCurrentWeather($user['latitude'], $user['longitude']);
-                    $weatherData[] = [
-                        'user_id' => $user['id'],
-                        'name' => $user['name'],
-                        'latitude' => $user['latitude'],
-                        'longitude' => $user['longitude'],
-                        'weather' => $weather
-                    ];
-                } else {
-                    $weatherData[] = [
-                        'user_id' => $user['id'],
-                        'name' => $user['name'],
-                        'latitude' => null,
-                        'longitude' => null,
-                        'weather' => null,
-                        'error' => 'No coordinates available'
-                    ];
-                }
+                $weather = $weatherService->getCurrentWeather($user['latitude'], $user['longitude']);
+                $weatherData[] = [
+                    'user' => $user,
+                    'weather' => $weather
+                ];
             }
 
-            return response()->json([
-                'success' => true,
-                'data' => $weatherData
-            ]);
+            return response()->json($weatherData);
         } catch (\Exception $e) {
-            return response()->json([
-                'success' => false,
-                'error' => $e->getMessage()
-            ], 500);
+            report($e);
+            return response()->json("Error getting users weather data", 500);
         }
     }
 }

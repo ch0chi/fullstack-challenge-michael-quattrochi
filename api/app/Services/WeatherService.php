@@ -53,7 +53,6 @@ class WeatherService
         } catch (WeatherProviderException $e) {
             report($e);
 
-            //Handle on controller level
             return null; // No data available
         }
     }
@@ -170,7 +169,6 @@ class WeatherService
             'wind_speed' => $weatherData['wind']['speed'] ?? null,
             'wind_direction' => $weatherData['wind']['deg'] ?? null,
             'wind_gust' => $weatherData['wind']['gust'] ?? null,
-            'wind_degree' => $weatherData['wind']['deg'] ?? null,
             'visibility' => $weatherData['visibility'] ?? null,
             'cloudiness' => $weatherData['clouds']['all'] ?? null,
         ];
