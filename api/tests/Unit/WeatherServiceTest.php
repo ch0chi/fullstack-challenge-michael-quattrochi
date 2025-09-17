@@ -20,7 +20,7 @@ class WeatherServiceTest extends TestCase
     public function setUp(): void
     {
         parent::setUp();
-        $this->weatherService = new WeatherService();
+        $this->weatherService = $this->app->make(WeatherService::class);
     }
 
     /**
@@ -72,17 +72,17 @@ class WeatherServiceTest extends TestCase
             'longitude' => -118.2437
         ]);
 
-        $users = [];
+        $users = User::all()->select(['id','name','latitude','longitude'])->toArray();
         //todo  I'd normally chunk this to avoid memory issues and mock the HTTP client.
         //      Using a DTO would also be preferable to an array.
-        foreach(User::all() as $user) {
-            $users[] = [
-                'id' => $user->id,
-                'name' => $user->name,
-                'latitude' => $user->latitude,
-                'longitude' => $user->longitude
-            ];
-        }
+//        foreach(User::all() as $user) {
+//            $users[] = [
+//                'id' => $user->id,
+//                'name' => $user->name,
+//                'latitude' => $user->latitude,
+//                'longitude' => $user->longitude
+//            ];
+//        }
 
         $result = $this->weatherService->warmCacheForUsers($users);
 

@@ -10,8 +10,8 @@ export default {
 
   methods: {
     async fetchData() {
-      const url = 'http://localhost/'
-      this.apiResponse = await (await fetch(url)).json()
+      const url = 'http://localhost:8003/api/weather/users/summary'
+      this.apiResponse = await (await fetch(url)).json();
     }
   }
 }
