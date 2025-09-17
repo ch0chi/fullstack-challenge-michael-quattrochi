@@ -4,7 +4,7 @@ services:
         build:
             context: ./docker
         ports:
-            - "80:80"
+            - "8003:80"
         volumes:
             - .:/var/www/html
 
