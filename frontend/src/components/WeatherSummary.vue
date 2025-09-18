@@ -1,7 +1,8 @@
 <script setup lang="ts">
 /**
  * todo I would normally break this into smaller components if I had more time.
- *      I'd also add types to comply with the TS standards.
+ *      I'd also add types to comply with the TS standards, and would use the
+ *      store for state management- with polling to keep the data fresh.
  * This component fetches and displays a summary of users' weather data in a table format.
  * It allows users to click on a row to view detailed weather information in a dialog.
  * The component uses Vuetify for UI components and styling.
@@ -46,6 +47,7 @@ const usersWeatherSummaryRows = computed(() => {
     name: item.user.name,
     latitude: item.user.latitude,
     longitude: item.user.longitude,
+    last_updated: item.last_updated,
     temperature: item.weather ? `${item.weather.temperature} °F` : "N/A",
     condition: item.weather ? item.weather.conditions : "N/A",
   }));
@@ -54,7 +56,7 @@ const usersWeatherSummaryRows = computed(() => {
 const userWeatherDetails = computed(() => {
   if (!selectedItem.value) return null;
   const userData = weatherData.value.find(
-    (item) => item.user.id === selectedItem.value.id
+    (item) => selectedItem.value && item.user.id === selectedItem.value.id
   );
   return userData ? userData.weather : null;
 });
@@ -135,6 +137,10 @@ const fetchWeatherData = async () => {
             </p>
             <p>
               <strong>Cloudiness:</strong> {{ userWeatherDetails.cloudiness }}
+            </p>
+            <v-divider></v-divider>
+            <p>
+              <strong>Last Updated:</strong> {{ selectedItem.last_updated }}
             </p>
           </div>
         </div>

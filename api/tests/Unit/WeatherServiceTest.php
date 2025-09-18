@@ -23,6 +23,17 @@ class WeatherServiceTest extends TestCase
         $this->weatherService = $this->app->make(WeatherService::class);
     }
 
+    public function testCanMakeCacheKey(): void {
+        $prefix = "weather:current";
+        $latitude = 39.750959;
+        $longitude = -105.064573;
+
+        $expectedKey = "{$prefix}:{$latitude}:{$longitude}";
+        $actualKey = $this->weatherService->makeCacheKey($prefix, $latitude, $longitude);
+
+        $this->assertEquals($expectedKey, $actualKey);
+    }
+
     /**
      * Test fetching weather data from the API.
      *
@@ -75,14 +86,6 @@ class WeatherServiceTest extends TestCase
         $users = User::all()->select(['id','name','latitude','longitude'])->toArray();
         //todo  I'd normally chunk this to avoid memory issues and mock the HTTP client.
         //      Using a DTO would also be preferable to an array.
-//        foreach(User::all() as $user) {
-//            $users[] = [
-//                'id' => $user->id,
-//                'name' => $user->name,
-//                'latitude' => $user->latitude,
-//                'longitude' => $user->longitude
-//            ];
-//        }
 
         $result = $this->weatherService->warmCacheForUsers($users);
 
@@ -110,7 +113,7 @@ class WeatherServiceTest extends TestCase
             'longitude' => -74.0060
         ]);
 
-        $timeStampKey = "weather:current:timestamp:{$user->latitude}:{$user->longitude}";
+        $timeStampKey = $this->weatherService->makeCacheKey('weather:current:timestamp', $user->latitude, $user->longitude);
 
         $wx1 = $this->weatherService->getCurrentWeather($user->latitude, $user->longitude);
         $this->assertIsArray($wx1);

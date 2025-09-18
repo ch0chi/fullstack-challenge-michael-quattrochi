@@ -30,8 +30,8 @@ class WeatherService
      */
     public function getCurrentWeather(float $latitude, float $longitude, bool $forceRefresh = false): ?array
     {
-        $cacheKey = "weather:current:{$latitude}:{$longitude}";
-        $timestampKey = "weather:current:timestamp:{$latitude}:{$longitude}";
+        $cacheKey = $this->makeCacheKey('weather:current', $latitude, $longitude);
+        $timestampKey = $this->makeCacheKey('weather:current:timestamp', $latitude, $longitude);
 
         $cached = Cache::get($cacheKey);
         $stale = $this->isCacheStale($timestampKey);
@@ -132,18 +132,19 @@ class WeatherService
         $weatherData = [];
 
         foreach ($users as $user) {
-            $userWeatherKey = "weather:current:{$user['latitude']}:{$user['longitude']}";
-            $userWeatherTimestampKey = "weather:current:timestamp:{$user['latitude']}:{$user['longitude']}";
+            $timeStampKey = $this->makeCacheKey('weather:current:timestamp', $user['latitude'], $user['longitude']);
 
             $weather = $this->getCurrentWeather($user['latitude'], $user['longitude']);
 
-            //todo if i had more time i'd add more checks to make sure the timestamps are valid
-            $lastUpdated = Cache::get($userWeatherTimestampKey);
+            $lastUpdated = Cache::get($timeStampKey);
+            if($lastUpdated !== null) {
+                $lastUpdated = now()->createFromTimestamp($lastUpdated)->toISOString();
+            }
 
             $weatherData[] = [
                 'user' => $user,
-                'weather' => $weather ? $this->mapCurrentWeather($weather) : null,
-                'last_updated' => $lastUpdated->toISOString() ?? null
+                'weather' => $weather ?? null,
+                'last_updated' => $lastUpdated ?? null
             ];
         }
 
@@ -169,9 +170,23 @@ class WeatherService
             'wind_speed' => $weatherData['wind']['speed'] ?? null,
             'wind_direction' => $weatherData['wind']['deg'] ?? null,
             'wind_gust' => $weatherData['wind']['gust'] ?? null,
+            'wind_degree' => $weatherData['wind']['deg'] ?? null,
             'visibility' => $weatherData['visibility'] ?? null,
             'cloudiness' => $weatherData['clouds']['all'] ?? null,
         ];
+    }
+
+    /**
+     * Create a unique cache key based on prefix and coordinates
+     *
+     * @param string $prefix
+     * @param float $latitude
+     * @param float $longitude
+     * @return string
+     */
+    public function makeCacheKey(string $prefix, float $latitude, float $longitude): string
+    {
+        return "{$prefix}:{$latitude}:{$longitude}";
     }
 
     /**
