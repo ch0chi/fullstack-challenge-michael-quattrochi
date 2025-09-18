@@ -4,7 +4,7 @@
  */
 
 // Styles
-//import '@mdi/font/css/materialdesignicons.css'
+import "@mdi/font/css/materialdesignicons.css";
 import "vuetify/styles";
 
 // Composables
@@ -27,21 +27,6 @@ export default createVuetify({
           primary: "#1867C0",
           secondary: "#5CBBF6",
         },
-      },
-    },
-  },
-  defaults: {
-    VBtn: {
-      variant: "flat",
-    },
-    VCard: {
-      VBtn: {
-        variant: "flat",
-      },
-    },
-    VCardActions: {
-      VBtn: {
-        variant: "flat",
       },
     },
   },
