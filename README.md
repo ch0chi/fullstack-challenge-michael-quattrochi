@@ -53,8 +53,9 @@ Once completed:
   - Setup app key: `php artisan key:generate`
   - Migrate database: `php artisan migrate` 
   - Seed database: `php artisan db:seed`
+  - Run tests: `php artisan test` (tests clear cache so run before warming up cache)
   - Warmup the weather cache: `php artisan cache:warmup-weather`
-  - Run tests: `php artisan test`
+ 
 - Visit api: `http://localhost:8003`
 
 ### Frontend
