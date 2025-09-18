@@ -114,12 +114,14 @@ const fetchWeatherData = async () => {
               {{ userWeatherDetails.temperature }} °F
             </p>
             <p>
-              <strong>Feels Like:</strong> {{ userWeatherDetails.feels_like }}
+              <strong>Feels Like:</strong> {{ userWeatherDetails.feels_like }} °F
             </p>
             <p>
               <strong>Conditions:</strong> {{ userWeatherDetails.conditions }}
             </p>
-            <p><strong>Pressure:</strong> {{ userWeatherDetails.pressure }}</p>
+            <p>
+              <strong>Pressure:</strong> {{ userWeatherDetails.pressure }}mb
+            </p>
             <p><strong>Humidity:</strong> {{ userWeatherDetails.humidity }}%</p>
             <p>
               <strong>Wind Speed:</strong>
@@ -138,7 +140,6 @@ const fetchWeatherData = async () => {
             <p>
               <strong>Cloudiness:</strong> {{ userWeatherDetails.cloudiness }}
             </p>
-            <v-divider></v-divider>
             <p>
               <strong>Last Updated:</strong> {{ selectedItem.last_updated }}
             </p>
