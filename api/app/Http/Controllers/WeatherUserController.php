@@ -9,7 +9,7 @@ class WeatherUserController extends Controller
 {
     /**
      * todo If I had more time, I would implement pagination for large user sets,
-     *      batch the weather requests, and pole the job status until
+     *      batch the weather requests, and poll the job status until
      *      complete using echo, pusher, socket.io, or some other websocket.
      *      I'd also use horizon to monitor the jobs.
      *

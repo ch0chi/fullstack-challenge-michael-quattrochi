@@ -53,11 +53,13 @@ Once completed:
   - Setup app key: `php artisan key:generate`
   - Migrate database: `php artisan migrate` 
   - Seed database: `php artisan db:seed`
+  - Warmup the weather cache: `php artisan cache:warmup-weather`
   - Run tests: `php artisan test`
-- Visit api: `http://localhost`
+- Visit api: `http://localhost:8003`
 
 ### Frontend
 - Navigate to `/frontend` folder
+- Copy .env.example: `cp .env.example .env`
 - Ensure nodejs v18 is active on host
 - Install javascript dependencies: `npm install`
 - Run frontend: `npm run dev`

@@ -6,6 +6,10 @@ use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Log;
 use App\Exceptions\WeatherProviderException;
+
+/**
+ * Service to fetch and cache weather data from OpenWeather API
+ */
 class WeatherService
 {
     private string $apiKey;
@@ -22,7 +26,7 @@ class WeatherService
     }
 
     /**
-     * Get current weather for a specific location
+     * Get current weather for a specific location from cache or API
      *
      * @param float $latitude
      * @param float $longitude
@@ -191,8 +195,9 @@ class WeatherService
     }
 
     /**
-     * @todo If I had more time, I'd make this into it's own caching service-
-     *      including rate limiting, queueing, and async calls.
+     * @todo If I had more time, I'd make this (and the otehr caching methods
+     *      in here) into its own caching service including rate limiting,
+     *      queueing, and async calls.
      * Warm the cache for all users by pre-fetching weather data
      *
      * @param array $users Array of users with latitude and longitude
@@ -223,9 +228,6 @@ class WeatherService
                     $results['errors'][] = "Failed to fetch weather for user {$user['id']}";
                 }
 
-                //Makeshift rate limiting due to time constraints
-                usleep(100000); //0.1s
-
             } catch (\Exception $e) {
                 $results['failed']++;
                 $results['errors'][] = "Error for user {$user['id']}: " . $e->getMessage();
@@ -233,20 +235,5 @@ class WeatherService
         }
 
         return $results;
-    }
-
-    /**
-     * Get cache statistics for monitoring.
-     *
-     * @return array
-     */
-    public function getCacheStats(): array
-    {
-        return [
-            'cache_ttl' => $this->cacheTtl,
-            'max_cache_age' => $this->maxCacheAge,
-            'cache_driver' => config('cache.default'),
-            'timestamp' => now()->toISOString()
-        ];
     }
 }
