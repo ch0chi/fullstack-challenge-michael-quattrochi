@@ -10,14 +10,15 @@ class WeatherService
 {
     private string $apiKey;
     private string $baseUrl;
-    private int $cacheTtl; // 30 minutes in seconds (shorter TTL for freshness)
-    private int $maxCacheAge = 3300; // 55min  maximum age before considering stale
+    private int $cacheTtl;
+    private int $maxCacheAge;
 
     public function __construct(?string $baseUrl, ?string $apiKey)
     {
         $this->baseUrl = config('weather.openweather.base_url');
         $this->apiKey = config('weather.openweather.api_key');
         $this->cacheTtl = config('weather.ttl');
+        $this->maxCacheAge = config('weather.max_cache_age');
     }
 
     /**

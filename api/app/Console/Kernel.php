@@ -16,6 +16,7 @@ class Kernel extends ConsoleKernel
      */
     protected function schedule(Schedule $schedule)
     {
+        //schedule the job to warm the cache every 30 minutes.
         $schedule->call(function () {
             RefreshWeatherCache::dispatch();
         })->everyThirtyMinutes()
